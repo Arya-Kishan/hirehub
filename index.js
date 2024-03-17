@@ -3,11 +3,13 @@ const cors = require('cors');
 const fileUpload = require("express-fileupload")
 require('dotenv').config()
 const path = require("path");
+
+require('./mongoDB')
+
 const PORT = process.env.PORT || 8080
 const userRouter = require("./routes/UserRoute")
 const jobRouter = require("./routes/JobRoute")
 const applicationRouter = require("./routes/ApplicationRoute")
-require('./mongoDB')
 
 const server = express()
 
@@ -19,7 +21,6 @@ server.use(
     tempFileDir: "/tmp/",
   })
 );
-server.use(express.static(path.join(__dirname, 'dist')));
 
 
 server.use("/user", userRouter)
