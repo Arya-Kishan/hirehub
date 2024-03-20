@@ -1,10 +1,19 @@
 const { Job } = require("../models/JobModel");
-const { User } = require("../models/UserModel");
 
 exports.getAllJob = async (req, res) => {
     try {
-        const jobs = await Job.find();
-        res.status(200).json(jobs);
+
+        if (req.query.search) {
+            const jobs = await Job.find({ "title": { $regex: '^' + req.query.search, $options: 'i' } });
+            res.status(200).json(jobs);
+        } else if (req.query.sort && req.query.order) {
+            const jobs = await Job.find().sort({ [req.query.sort]: Number(req.query.order) });
+            res.status(200).json(jobs);
+        } else {
+            const jobs = await Job.find();
+            res.status(200).json(jobs);
+        }
+
     } catch (error) {
         console.log(error);
         res.status(400).json({ 'message': 'Error In Getting All Jobs' });
@@ -13,9 +22,20 @@ exports.getAllJob = async (req, res) => {
 
 exports.getJob = async (req, res) => {
     try {
-        const { jobId } = req.query;
-        const user = await Job.findById(jobId);
-        res.status(200).json(user);
+        const { jobId, postedBy } = req.query;
+
+        if (jobId) {
+            // helps in getting job details
+            const docs = await Job.findById(jobId);
+            res.status(200).json(docs);
+        } else if (postedBy) {
+            // helps in getting job posted by employer
+            const docs = await Job.find({ postedBy: postedBy });
+            res.status(200).json(docs);
+        } else {
+            res.status(400).json("CAN'T GET QUERY FOR JOB");
+        }
+
     } catch (error) {
         console.log(error);
         res.status(400).json({ 'message': 'Error In Getting Job By Id' });
@@ -24,7 +44,7 @@ exports.getJob = async (req, res) => {
 
 exports.addJob = async (req, res) => {
     try {
-        
+
         const job = new Job(req.body)
         let newUser = await job.save();
         res.status(200).json(newUser);

@@ -24,11 +24,21 @@ exports.loginUser = async (req, res) => {
 
 exports.getAllUser = async (req, res) => {
     try {
-        const user = await User.find();
-        res.status(200).json(user);
+
+        if (req.query.search) {
+            const docs = await User.find({ "name": { $regex: '^' + req.query.search, $options: 'i' } });
+            res.status(200).json(docs);
+        } else if (req.query.sort && req.query.order) {
+            const docs = await User.find().sort({ [req.query.sort]: Number(req.query.order) });
+            res.status(200).json(docs);
+        } else {
+            const docs = await User.find();
+            res.status(200).json(docs);
+        }
+
     } catch (error) {
         console.log(error);
-        res.status(400).json({ 'message': 'Error in All User' });
+        res.status(400).json({ 'message': 'Error In Getting All Jobs' });
     }
 }
 
