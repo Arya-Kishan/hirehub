@@ -15,7 +15,7 @@ const applicationSchema = new mongoose.Schema({
   },
   coverLetter: {
     type: String,
-    required: [true, "Please provide a cover letter!"],
+    default: ""
   },
   phone: {
     type: Number,
@@ -27,6 +27,7 @@ const applicationSchema = new mongoose.Schema({
   },
   resume: {
     type: String,
+    default: ""
   },
   applicantId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -38,6 +39,10 @@ const applicationSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  appliedAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 exports.Application = mongoose.model("Application", applicationSchema);

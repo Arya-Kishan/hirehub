@@ -1,5 +1,27 @@
 const { User } = require("../models/UserModel");
 
+
+exports.loginUser = async (req, res) => {
+    try {
+        console.log("LOGIN USER");
+        console.log(req.body);
+        const user = await User.findOne({ email: req.body.email })
+        console.log(user);
+
+        if (req.body.password == user.password) {
+            console.log("correct");
+            res.status(200).json(user);
+        } else {
+            res.status(400).json({ 'message': 'Wrong Password' });
+        }
+
+    } catch (error) {
+        console.log(error);
+        console.log("Error in Login user");
+        res.status(400).json({ 'message': 'Error in Login user' });
+    }
+}
+
 exports.getAllUser = async (req, res) => {
     try {
         const user = await User.find();

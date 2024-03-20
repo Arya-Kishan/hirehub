@@ -24,15 +24,14 @@ exports.getJob = async (req, res) => {
 
 exports.addJob = async (req, res) => {
     try {
-
+        
         const job = new Job(req.body)
         let newUser = await job.save();
-
         res.status(200).json(newUser);
 
     } catch (error) {
         console.log(error);
-        res.status(400).json({ 'message': 'Error In Making New Job',"error":error });
+        res.status(400).json({ 'message': 'Error In Making New Job', "error": error });
     }
 }
 
@@ -40,7 +39,7 @@ exports.updateJob = async (req, res) => {
     try {
 
         const { jobId } = req.query;
-        const updatedJob = await Job.findByIdAndUpdate(jobId,req.body,{ new: true })
+        const updatedJob = await Job.findByIdAndUpdate(jobId, req.body, { new: true })
         res.status(200).json(updatedJob);
 
     } catch (error) {
