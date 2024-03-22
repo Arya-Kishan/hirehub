@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 8080
 const userRouter = require("./routes/UserRoute")
 const jobRouter = require("./routes/JobRoute")
 const postRouter = require("./routes/PostsRoutes")
-// const commentRouter = require("./routes/CommentRoute")
+const notificationRouter = require("./routes/NotificationRoute")
 const applicationRouter = require("./routes/ApplicationRoute")
 
 const server = express()
@@ -29,7 +29,7 @@ server.use("/user", userRouter)
 server.use("/job", jobRouter)
 server.use("/application", applicationRouter)
 server.use("/post", postRouter)
-// server.use("/comment", commentRouter)
+server.use("/notification", notificationRouter)
 
 
 server.use("/", (req, res) => {
