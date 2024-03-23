@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     },
     phone: {
         type: Number,
-        required: [true, "Please enter your Phone Number!"],
+        default:0,
     },
     password: {
         type: String,
@@ -24,8 +24,8 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        required: [true, "Please select a role"],
         enum: ["applicant", "employer"],
+        default:""
     },
     friends:{
         type: [mongoose.Schema.Types.ObjectId],

@@ -11,11 +11,14 @@ const userRouter = require("./routes/UserRoute")
 const jobRouter = require("./routes/JobRoute")
 const postRouter = require("./routes/PostsRoutes")
 const notificationRouter = require("./routes/NotificationRoute")
-const applicationRouter = require("./routes/ApplicationRoute")
+const applicationRouter = require("./routes/ApplicationRoute");
+const { jwtAuthenticateUser } = require('./middlewares/Authenticate');
 
 const server = express()
 
-server.use(cors())
+server.use(cors({
+  exposedHeaders: ["X-jwt-routes"]
+}));
 server.use(express.json());
 server.use(
   fileUpload({
@@ -26,10 +29,10 @@ server.use(
 
 
 server.use("/user", userRouter)
-server.use("/job", jobRouter)
-server.use("/application", applicationRouter)
-server.use("/post", postRouter)
-server.use("/notification", notificationRouter)
+server.use("/job", jwtAuthenticateUser, jobRouter)
+server.use("/application", jwtAuthenticateUser, applicationRouter)
+server.use("/post", jwtAuthenticateUser, postRouter)
+server.use("/notification", jwtAuthenticateUser, notificationRouter)
 
 
 server.use("/", (req, res) => {
