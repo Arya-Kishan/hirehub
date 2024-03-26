@@ -43,12 +43,7 @@ exports.getApplication = async (req, res) => {
 exports.addApplication = async (req, res) => {
     try {
 
-        // console.log(req.body);
-
-        // const application = new Application(req.body)
-        // let newApplication = await application.save();
-        // res.status(200).json(newApplication);
-
+        console.log("--------ADDING APPLICATION--------");
 
         let url = await getUrl(req.files?.resume)
 

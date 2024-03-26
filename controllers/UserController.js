@@ -2,6 +2,23 @@ const { User } = require("../models/UserModel");
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 
+exports.logInAsGuest = async (req, res) => {
+    try {
+        const user = await User.findById("65f9b6bf2f8c7fe881118a90");
+
+        // CREATING JWT TOKEN
+        const jwtToken = jwt.sign({ userEmail: user.email, userId: user._id }, "JWT_SECRET");
+        console.log(jwtToken);
+
+        res.set("X-jwt-routes", jwtToken);
+        res.status(200).json(user);
+
+    } catch (error) {
+        console.log(error);
+        res.status(400).json("ERROR IN LOGIN AS GUEST");
+    }
+}
+
 
 exports.checkUserWithJwt = async (req, res) => {
     try {

@@ -34,13 +34,11 @@ exports.getUserPostsById = async (req, res) => {
 exports.addPost = async (req, res) => {
     try {
 
-        // console.log(req.body);
-        // const post = new Post(req.body)
-        // let newPost = await post.save();
-        // res.status(200).json(newPost);
+        console.log("-------------ADDING POST----------");
 
+        console.log(req.files);
 
-        let picUrl = await getUrl(req.files?.resume)
+        let picUrl = await getUrl(req.files?.pic)
 
         const post = new Post({ ...req.body, picUrl: picUrl })
         let newPost = await post.save();
@@ -48,7 +46,7 @@ exports.addPost = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        res.status(400).json({ 'message': 'Error In Making New Posts' });
+        res.status(400).json({data:'ERROR IN UPLOADING POST',error:error});
     }
 }
 
