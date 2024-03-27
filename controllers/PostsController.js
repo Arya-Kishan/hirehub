@@ -23,7 +23,7 @@ exports.getAllPosts = async (req, res) => {
 exports.getUserPostsById = async (req, res) => {
     try {
         const { userId } = req.query;
-        const doc = await Post.find({ userId: userId }).populate("likes").populate("comments.userId");
+        const doc = await Post.find({ userId: userId }).populate("userId").populate("likes").populate("comments.userId");
         res.status(200).json(doc);
     } catch (error) {
         console.log(error);
