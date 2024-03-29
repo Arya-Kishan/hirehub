@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const { Schema } = mongoose;
-const validator  = require("validator")
+const validator = require("validator")
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     },
     phone: {
         type: Number,
-        default:0,
+        default: 0,
     },
     password: {
         type: String,
@@ -25,17 +25,38 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         enum: ["applicant", "employer"],
-        default:""
+        default: ""
     },
-    friends:{
+    friends: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: "User",
-        default:[],
+        default: [],
     },
-    createdAt: {
-        type: Date,
-        default: Date.now,
+    interest: {
+        type: [String],
+        default: ["Web", "Living", "Game"],
     },
-})
+    bio: {
+        type: String,
+        default: "",
+    },
+    location: {
+        type: String,
+        default: "",
+    },
+    bannerImg: {
+        type: String,
+        default: "",
+    },
+    profilePic: {
+        type: String,
+        default: "",
+    },
+    socials: {
+        type: [{}],
+        default: [{ instagram: "" }, { linkedIn: "" }, { twitter: "" }]
+    },
+
+}, { timestamps: true })
 
 exports.User = mongoose.model("User", userSchema)
