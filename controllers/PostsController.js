@@ -4,16 +4,36 @@ const { getUrl } = require("../Helper/Cloudinary");
 
 exports.getAllPosts = async (req, res) => {
     try {
-        const doc = await Post.find().populate("userId").populate({
-            path: "likes",
-            model: 'User',
-            select: { '_id': 1, 'name': 1 },
-        }).populate({
-            path: "comments.userId",
-            model: 'User',
-            select: { '_id': 1, 'name': 1 },
-        });
-        res.status(200).json(doc);
+
+        if (req.query.tag) {
+
+            const doc = await Post.find({ hashtags: { $regex: '^' + req.query.tag, $options: 'i' } }).populate("userId").populate({
+                path: "likes",
+                model: 'User',
+                select: { '_id': 1, 'name': 1 },
+            }).populate({
+                path: "comments.userId",
+                model: 'User',
+                select: { '_id': 1, 'name': 1 },
+            });
+
+            res.status(200).json(doc);
+
+
+        } else {
+            const doc = await Post.find().populate("userId").populate({
+                path: "likes",
+                model: 'User',
+                select: { '_id': 1, 'name': 1 },
+            }).populate({
+                path: "comments.userId",
+                model: 'User',
+                select: { '_id': 1, 'name': 1 },
+            });
+
+            res.status(200).json(doc);
+        }
+
     } catch (error) {
         console.log(error);
         res.status(400).json({ 'message': 'Error In Getting All Posts' });
@@ -46,7 +66,7 @@ exports.addPost = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        res.status(400).json({data:'ERROR IN UPLOADING POST',error:error});
+        res.status(400).json({ data: 'ERROR IN UPLOADING POST', error: error });
     }
 }
 

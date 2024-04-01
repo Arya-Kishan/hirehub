@@ -30,9 +30,9 @@ server.use(
 
 
 server.use("/user", userRouter)
-server.use("/job", jwtAuthenticateUser, jobRouter)
+server.use("/job", jobRouter)
 server.use("/application", jwtAuthenticateUser, applicationRouter)
-server.use("/post", jwtAuthenticateUser, postRouter)
+server.use("/post", postRouter)
 server.use("/notification", jwtAuthenticateUser, notificationRouter)
 server.use("/blog", blogRouter)
 

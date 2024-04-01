@@ -1,18 +1,67 @@
 const { Job } = require("../models/JobModel");
 
 exports.getAllJob = async (req, res) => {
+
     try {
 
-        if (req.query.search) {
-            const jobs = await Job.find({ "title": { $regex: '^' + req.query.search, $options: 'i' } });
-            res.status(200).json(jobs);
-        } else if (req.query.sort && req.query.order) {
-            const jobs = await Job.find().sort({ [req.query.sort]: Number(req.query.order) });
-            res.status(200).json(jobs);
+        console.log(req.query);
+
+        let query = Job.find();
+
+        const queryLength = Object.keys(req.query).length
+        console.log(queryLength);
+
+        if (queryLength > 0) {
+
+            let queryArr = [];
+
+            for (let key in req.query) {
+
+
+                if (key == "experience") {
+                    queryArr.push({ experience: { $in: JSON.parse(req.query.experience) } })
+                }
+
+                if (key == "type") {
+                    queryArr.push({ type: { $in: JSON.parse(req.query.type) } })
+                }
+
+                if (key == "category") {
+                    queryArr.push({ category: { $in: JSON.parse(req.query.category) } })
+                }
+
+                if (key == "salaryFrom") {
+                    queryArr.push({ fixedSalary: { "$gte": Number(req.query.salaryFrom), "$lte": Number(req.query.salaryTo) } })
+                }
+
+                if (key == "country") {
+                    queryArr.push({ country: { $regex: '^' + req.query.country, $options: 'i' } })
+                }
+
+                if (key == "country") {
+                    queryArr.push({ country: { $regex: '^' + req.query.country, $options: 'i' } })
+                }
+
+                if (key == "search") {
+                    queryArr.push({ "title": { $regex: '^' + req.query.search, $options: 'i' } })
+                }
+
+            }
+
+            console.log(queryArr);
+
+            query = query.find({ $and: queryArr });
+
+
         } else {
-            const jobs = await Job.find();
-            res.status(200).json(jobs);
+
+            query = query.find();
+
         }
+
+        query = await query.skip(10 * req.query.page).limit(10);
+
+        res.status(200).json(query);
 
     } catch (error) {
         console.log(error);
@@ -80,3 +129,20 @@ exports.deleteJob = async (req, res) => {
         res.status(400).json({ 'message': 'Error In Deleting Job' });
     }
 }
+
+exports.getCountries = async (req, res) => {
+    try {
+
+        const countriesArr = await Job.find().select("country")
+
+        res.status(200).json(countriesArr)
+
+
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ 'message': 'Error In Getting All Countries' });
+    }
+}
+
+
+

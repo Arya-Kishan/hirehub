@@ -43,6 +43,18 @@ const jobSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  type: {
+    type: [],
+    default: []
+  },
+  experience: {
+    type: Number,
+    default: 0
+  },
+  appliedApplicants: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User",
+  },
   postedBy: {
     type: mongoose.Schema.ObjectId,
     ref: "User",
