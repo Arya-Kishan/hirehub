@@ -30,11 +30,11 @@ server.use(
 
 
 server.use("/user", userRouter)
-server.use("/job", jobRouter)
+server.use("/job", jwtAuthenticateUser, jobRouter)
 server.use("/application", jwtAuthenticateUser, applicationRouter)
-server.use("/post", postRouter)
+server.use("/post", jwtAuthenticateUser, postRouter)
 server.use("/notification", jwtAuthenticateUser, notificationRouter)
-server.use("/blog", blogRouter)
+server.use("/blog", jwtAuthenticateUser, blogRouter)
 
 
 server.use("/", (req, res) => {

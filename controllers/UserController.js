@@ -143,47 +143,54 @@ exports.updateUser = async (req, res) => {
     try {
 
         console.log(req.body);
+        console.log(req.query);
         console.log(req.files);
-
-        let interest = req.body.interest.split(",")
-        let socials = req.body.socials.split(",")
-        socials = [{ instagram: socials[0] }, { linkedIn: socials[1] }, { twitter: socials[2] }]
-
-        let bannerImg = null;
-        let profilePic = null;
-
-        if (req.body.bannerImg == 'undefined') {
-            delete req.body.bannerImg
-        }
-
-        if (req.body.profilePic == 'undefined') {
-            delete req.body.profilePic
-        }
-
-
-        if (req.files) {
-
-            if (req.files.bannerImg) {
-                console.log("CHANGING BANNER IMG")
-                bannerImg = await getUrl(req.files.bannerImg)
-            }
-
-            if (req.files.profilePic) {
-                console.log("CHANGING PROFILE PIC IMG")
-                profilePic = await getUrl(req.files.profilePic)
-            }
-
-            req.body = { ...req.body, bannerImg: bannerImg, profilePic: profilePic }
-
-        }
-
-        let newData = { ...req.body, interest: interest, socials: socials, phone: Number(req.body.phone) }
-        console.log(newData);
-
-
         const { userId } = req.query;
-        const updateUser = await User.findByIdAndUpdate(userId, newData, { new: true })
-        res.status(200).json(updateUser);
+
+        if (req.body.savedJobs) {
+
+            const updateUser = await User.findByIdAndUpdate(userId, { $push: { savedJobs: req.body.savedJobs } }, { new: true })
+            res.status(200).json(updateUser);
+
+        } else {
+            let interest = req.body.interest.split(",")
+            let socials = req.body.socials.split(",")
+            socials = [{ instagram: socials[0] }, { linkedIn: socials[1] }, { twitter: socials[2] }]
+
+            let bannerImg = null;
+            let profilePic = null;
+
+            if (req.body.bannerImg == 'undefined') {
+                delete req.body.bannerImg
+            }
+
+            if (req.body.profilePic == 'undefined') {
+                delete req.body.profilePic
+            }
+
+
+            if (req.files) {
+
+                if (req.files.bannerImg) {
+                    console.log("CHANGING BANNER IMG")
+                    bannerImg = await getUrl(req.files.bannerImg)
+                }
+
+                if (req.files.profilePic) {
+                    console.log("CHANGING PROFILE PIC IMG")
+                    profilePic = await getUrl(req.files.profilePic)
+                }
+
+                req.body = { ...req.body, bannerImg: bannerImg, profilePic: profilePic }
+
+            }
+
+            let newData = { ...req.body, interest: interest, socials: socials, phone: Number(req.body.phone) }
+            console.log(newData);
+
+            const updateUser = await User.findByIdAndUpdate(userId, newData, { new: true })
+            res.status(200).json(updateUser);
+        }
 
     } catch (error) {
         console.log(error);

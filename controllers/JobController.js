@@ -5,11 +5,12 @@ exports.getAllJob = async (req, res) => {
     try {
 
         console.log(req.query);
+        console.log((req.params["page"]));
+        const page = (req.params["page"]);
 
         let query = Job.find();
 
         const queryLength = Object.keys(req.query).length
-        console.log(queryLength);
 
         if (queryLength > 0) {
 
@@ -59,7 +60,7 @@ exports.getAllJob = async (req, res) => {
 
         }
 
-        query = await query.skip(10 * req.query.page).limit(10);
+        query = await query.skip(10 * page).limit(10);
 
         res.status(200).json(query);
 
@@ -71,14 +72,23 @@ exports.getAllJob = async (req, res) => {
 
 exports.getJob = async (req, res) => {
     try {
-        const { jobId, postedBy } = req.query;
+        const { jobId, postedBy, jobIdArr } = req.query;
 
-        if (jobId) {
+        if (jobIdArr) {
+
+            let jobIdArr1 = JSON.parse(jobIdArr)
+
+            let jobsArr = await Promise.all(jobIdArr1.map(async (e) => (await Job.findById(e))))
+
+            res.status(200).send(jobsArr)
+
+        } else if (jobId) {
             // helps in getting job details
             const docs = await Job.findById(jobId);
             res.status(200).json(docs);
         } else if (postedBy) {
             // helps in getting job posted by employer
+            console.log("GETTING JOB POSTEX BY EMPLOYER");
             const docs = await Job.find({ postedBy: postedBy });
             res.status(200).json(docs);
         } else {
@@ -93,6 +103,8 @@ exports.getJob = async (req, res) => {
 
 exports.addJob = async (req, res) => {
     try {
+
+        console.log(req.body);
 
         const job = new Job(req.body)
         let newUser = await job.save();

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require("validator")
 
+
 const applicationSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -23,7 +24,7 @@ const applicationSchema = new mongoose.Schema({
   },
   address: {
     type: String,
-    required: [true, "Please enter your Address!"],
+    default:""
   },
   resume: {
     type: String,
@@ -31,7 +32,7 @@ const applicationSchema = new mongoose.Schema({
   },
   jobId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "JOb",
+    ref: "Job",
     required: true,
   },
   applicantId: {

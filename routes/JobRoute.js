@@ -4,7 +4,7 @@ const { getJob, addJob, updateJob, deleteJob, getAllJob, getCountries } = requir
 const router = express.Router();
 
 router.get("/", getJob)
-    .get("/all", getAllJob)
+    .get("/all/:page", getAllJob)
     .get("/country/all", getCountries)
     .post("/", addJob)
     .patch("/", updateJob)

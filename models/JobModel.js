@@ -26,6 +26,9 @@ const jobSchema = new mongoose.Schema({
   location: {
     type: String,
   },
+  companyName:{
+    type:String
+  },
   fixedSalary: {
     type: Number,
   },
@@ -39,7 +42,7 @@ const jobSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  jobPostedOn: {
+  postedOn: {
     type: Date,
     default: Date.now,
   },
@@ -52,8 +55,10 @@ const jobSchema = new mongoose.Schema({
     default: 0
   },
   appliedApplicants: {
-    type: mongoose.Schema.ObjectId,
+    type: [mongoose.Schema.ObjectId],
     ref: "User",
+    default:[]
+
   },
   postedBy: {
     type: mongoose.Schema.ObjectId,

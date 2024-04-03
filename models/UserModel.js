@@ -56,6 +56,18 @@ const userSchema = new mongoose.Schema({
         type: [{}],
         default: [{ instagram: "" }, { linkedIn: "" }, { twitter: "" }]
     },
+    savedJobs: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Job",
+    },
+    appliedJobs: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Job",
+    },
+    savedPosts: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Post",
+    },
 
 }, { timestamps: true })
 

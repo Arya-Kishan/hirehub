@@ -22,11 +22,11 @@ exports.getApplication = async (req, res) => {
 
         if (applicantId) {
             console.log("my application");
-            const docs = await Application.find({ applicantId: applicantId });
+            const docs = await Application.find({ applicantId: applicantId }).populate("employerId").populate("jobId").populate("applicantId");
             res.status(200).json(docs);
         } else if (employerId) {
             console.log("other application");
-            const docs = await Application.find({ employerId: employerId });
+            const docs = await Application.find({ employerId: employerId }).populate("applicantId").populate("employerId").populate("jobId").populate("applicantId");
             res.status(200).json(docs);
         } else {
             res.status(400).json("NO QUERIES");
@@ -44,6 +44,7 @@ exports.addApplication = async (req, res) => {
     try {
 
         console.log("--------ADDING APPLICATION--------");
+        console.log(req.body);
 
         let url = await getUrl(req.files?.resume)
 
