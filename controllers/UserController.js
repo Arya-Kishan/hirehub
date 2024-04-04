@@ -1,7 +1,9 @@
 const { User } = require("../models/UserModel");
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const { getUrl } = require("../Helper/Cloudinary");
+const { sendMail } = require("../Helper/NodeMailer");
 
 exports.logInAsGuest = async (req, res) => {
     try {
@@ -83,14 +85,12 @@ exports.loginUser = async (req, res) => {
         const { email, password } = req.body;
 
         const user = await User.findOne({ email: email }).populate("friends")
-        console.log(user);
 
         // CHECKING PASSWORD WITH HASHED PASSWORD
         let comparePassword = await bcrypt.compare(password, user.password)
 
         // CREATING JWT TOKEN
         const jwtToken = jwt.sign({ userEmail: email, userId: user._id }, "JWT_SECRET");
-        console.log(jwtToken);
 
 
         if (comparePassword) {
@@ -223,4 +223,69 @@ exports.searchUser = async (req, res) => {
         console.log(error);
         res.status(400).json({ 'message': 'Error in Deleting User' });
     }
+}
+
+exports.forgotPassword = async (req, res) => {
+
+    try {
+
+        const { email } = req.body;
+
+        const user = await User.findOne({ email: email })
+
+        if (user) {
+
+            const token = crypto.randomBytes(48).toString('hex');
+            user.resetPasswordToken = token;
+            await user.save();
+
+
+            const subject = "Reset Password"
+            const html = `<p>Click <a href=${'https://mern-aryagram.vercel.app/changePassword?email=' + email + '&token=' + token}>here</a> to reset your password</p>`
+            let reponse = await sendMail({ email, subject, html })
+
+            res.status(200).json(reponse)
+
+        } else {
+            res.status(400).json("NO USER FOUND WITH THIS EMAIL")
+        }
+
+    } catch (error) {
+        console.log(error);
+        console.log("------- ERROR IN FORGOT PASSWORD ----------");
+        res.status(400).json("ERROR IN FORGOT PASSWORD")
+    }
+
+}
+
+
+exports.changePassword = async (req, res) => {
+
+    try {
+
+        console.log(req.body);
+        const { newPassword, email, token } = req.body;
+
+        const user = await User.findOne({ email: email })
+
+        if (token == user.resetPasswordToken) {
+
+            const hashPassword = await bcrypt.hash(newPassword, 15);
+            user.password = hashPassword;
+            await user.save()
+
+            console.log(user);
+
+            res.status(200).json("PASSWORD CHANGED")
+
+        } else {
+            res.status(200).json("UNAUTHORISED TOKEN PASSWORD CAN'T CHANGED")
+        }
+
+    } catch (error) {
+        console.log(error);
+        console.log("------- ERROR IN CHANGING PASSWORD ----------");
+        res.status(400).json("ERROR IN CHANGING PASSWORD")
+    }
+
 }

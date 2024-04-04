@@ -1,5 +1,5 @@
 const express = require('express');
-const { getUser, createUser, updateUser, deleteUser, getAllUser, searchUser, loginUser, checkUserWithJwt, logInAsGuest } = require('../controllers/UserController');
+const { getUser, createUser, updateUser, deleteUser, getAllUser, searchUser, loginUser, checkUserWithJwt, logInAsGuest, changePassword, forgotPassword } = require('../controllers/UserController');
 
 const router = express.Router();
 
@@ -10,6 +10,8 @@ router.get("/", getUser)
     .get("/checkUserWithJwt", checkUserWithJwt)
     .get("/search", searchUser)
     .post("/", createUser)
+    .post("/forgotPassword", forgotPassword)
+    .post("/changePassword", changePassword)
     .patch("/", updateUser)
     .delete("/", deleteUser)
 
