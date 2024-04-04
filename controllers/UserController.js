@@ -241,7 +241,7 @@ exports.forgotPassword = async (req, res) => {
 
 
             const subject = "Reset Password"
-            const html = `<p>Click <a href=${'https://mern-aryagram.vercel.app/changePassword?email=' + email + '&token=' + token}>here</a> to reset your password</p>`
+            const html = `<p>Click <a href=${'https://arya-hirehub.netlify.app/changePassword?email=' + email + '&token=' + token}>here</a> to reset your password</p>`
             let reponse = await sendMail({ email, subject, html })
 
             res.status(200).json(reponse)
