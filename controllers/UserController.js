@@ -247,7 +247,7 @@ exports.forgotPassword = async (req, res) => {
             res.status(200).json(reponse)
 
         } else {
-            res.status(400).json("NO USER FOUND WITH THIS EMAIL")
+            res.status(400).json("NO USER FOUND WITH GIVEN EMAIL")
         }
 
     } catch (error) {
