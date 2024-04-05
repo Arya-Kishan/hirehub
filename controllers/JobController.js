@@ -9,6 +9,7 @@ exports.getAllJob = async (req, res) => {
         const page = (req.params["page"]);
 
         let query = Job.find();
+        let totalQuery = Job.find();
 
         const queryLength = Object.keys(req.query).length
 
@@ -52,16 +53,22 @@ exports.getAllJob = async (req, res) => {
             console.log(queryArr);
 
             query = query.find({ $and: queryArr });
+            totalQuery = totalQuery.find({ $and: queryArr });
 
 
         } else {
 
             query = query.find();
+            totalQuery = totalQuery.find();
 
         }
 
+        let totalDocs = await totalQuery.count()
+        console.log(totalDocs);
+
         query = await query.skip(10 * page).limit(10);
 
+        res.set('X-Total-Count', totalDocs);
         res.status(200).json(query);
 
     } catch (error) {

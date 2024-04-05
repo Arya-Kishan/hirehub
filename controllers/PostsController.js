@@ -3,36 +3,28 @@ const { getUrl } = require("../Helper/Cloudinary");
 
 
 exports.getAllPosts = async (req, res) => {
+
     try {
 
-        if (req.query.tag) {
+        let { page } = req.query;
 
-            const doc = await Post.find({ hashtags: { $regex: '^' + req.query.tag, $options: 'i' } }).populate("userId").populate({
-                path: "likes",
-                model: 'User',
-                select: { '_id': 1, 'name': 1 },
-            }).populate({
-                path: "comments.userId",
-                model: 'User',
-                select: { '_id': 1, 'name': 1 },
-            });
+        const doc = await Post.find().populate("userId").populate({
+            path: "likes",
+            model: 'User',
+            select: { '_id': 1, 'name': 1 },
+        }).populate({
+            path: "comments.userId",
+            model: 'User',
+            select: { '_id': 1, 'name': 1 },
+        }).skip(10 * page).limit(10);
 
-            res.status(200).json(doc);
+        let totalCount = await Post.find().count();
+        console.log(totalCount);
 
+        res.set("x-total-post", totalCount)
 
-        } else {
-            const doc = await Post.find().populate("userId").populate({
-                path: "likes",
-                model: 'User',
-                select: { '_id': 1, 'name': 1 },
-            }).populate({
-                path: "comments.userId",
-                model: 'User',
-                select: { '_id': 1, 'name': 1 },
-            });
+        res.status(200).json(doc);
 
-            res.status(200).json(doc);
-        }
 
     } catch (error) {
         console.log(error);
