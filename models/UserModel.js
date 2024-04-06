@@ -72,6 +72,20 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
+    upgrade: {
+        type: {
+            pro: Boolean,
+            razorpay_order_id: String,
+            razorpay_payment_id: String,
+            razorpay_signature: String,
+        },
+        default: {
+            pro: false,
+            razorpay_payment_id: "",
+            razorpay_order_id: "",
+            razorpay_signature: "",
+        }
+    }
 
 }, { timestamps: true })
 

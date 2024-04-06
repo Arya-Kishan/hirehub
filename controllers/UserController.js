@@ -4,6 +4,18 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { getUrl } = require("../Helper/Cloudinary");
 const { sendMail } = require("../Helper/NodeMailer");
+const { Job } = require("../models/JobModel");
+const { Post } = require("../models/PostsModel");
+const { Blog } = require("../models/BlogsModel");
+const Razorpay = require("razorpay")
+
+var instance = new Razorpay({
+    key_id: process.env.RAZORPAY_API_KEY,
+    key_secret: process.env.RAZORPAY_API_SECRET,
+});
+
+//BELOW ID USED DURING PAYMENT FOR STORING USER ID WHO HAS SUBSCRIBE FOR PRO 
+let paymentUserId;
 
 exports.logInAsGuest = async (req, res) => {
     try {
@@ -202,8 +214,13 @@ exports.deleteUser = async (req, res) => {
     try {
 
         const { userId } = req.query;
-        const updateUser = await User.findByIdAndDelete(userId)
-        res.status(200).json(updateUser);
+
+        const updateUser1 = await User.findByIdAndDelete(userId)
+        const updateUser2 = await Job.deleteMany({ postedBy: userId })
+        const updateUser3 = await Post.deleteMany({ userId: userId })
+        const updateUser4 = await Blog.deleteMany({ userId: userId })
+
+        res.status(200).json("Deleted Permanently");
 
     } catch (error) {
         console.log(error);
@@ -286,6 +303,73 @@ exports.changePassword = async (req, res) => {
         console.log(error);
         console.log("------- ERROR IN CHANGING PASSWORD ----------");
         res.status(400).json("ERROR IN CHANGING PASSWORD")
+    }
+
+}
+
+
+exports.getFeatureOrderId = async (req, res) => {
+
+    try {
+
+        console.log(req.body);
+
+        paymentUserId = req.body.userId;
+
+        var options = {
+            amount: req.body.amount,
+            currency: "INR"
+        };
+
+        const order = await instance.orders.create(options);
+        res.status(200).json(order)
+
+    } catch (error) {
+        console.log(error);
+        res.status(400).json("PRO FEATURE ORDER ID NOT GENERATED")
+    }
+
+}
+
+exports.verifyFeatureOrderId = async (req, res) => {
+
+    try {
+
+        console.log("-------------VERIFYING ----------");
+        console.log(req.body);
+
+        const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+
+        console.log(razorpay_order_id);
+
+        const body = razorpay_order_id + "|" + razorpay_payment_id;
+
+        const expectedSignature = crypto.createHmac("sha256", process.env.RAZORPAY_API_SECRET).update(body.toString()).digest("hex");
+
+        const isAuthentic = expectedSignature === razorpay_signature;
+
+        if (isAuthentic) {
+
+            await User.findByIdAndUpdate(paymentUserId, { upgrade: { pro: true, ...req.body } })
+
+            console.log("PAYMENT SUCCESSFUL");
+
+            res.redirect(
+                `https://arya-hirehub.netlify.app/success?reference=${razorpay_payment_id}`
+            );
+
+        } else {
+
+            // WE WILL SHOW FAILURE AS IN FAILURE WE DON'T GET REFERENCE PAYMENT ID
+            res.redirect(
+                `https://arya-hirehub.netlify.app/success}`
+            );
+        }
+
+    } catch (error) {
+        console.log(error);
+        console.log("PAYMENT VERIFICATION FAILED");
+        res.status(400).json("PAYMENT VERIFICATION FAILED")
     }
 
 }

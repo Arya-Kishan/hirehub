@@ -21,6 +21,7 @@ server.use(cors({
   exposedHeaders: ["X-jwt-routes", "X-Total-Count","x-total-post"]
 }));
 server.use(express.json());
+server.use(express.urlencoded({ extended: false }))
 server.use(
   fileUpload({
     useTempFiles: true,
