@@ -340,8 +340,6 @@ exports.verifyFeatureOrderId = async (req, res) => {
 
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
-        console.log(razorpay_order_id);
-
         const body = razorpay_order_id + "|" + razorpay_payment_id;
 
         const expectedSignature = crypto.createHmac("sha256", process.env.RAZORPAY_API_SECRET).update(body.toString()).digest("hex");
@@ -361,6 +359,7 @@ exports.verifyFeatureOrderId = async (req, res) => {
         } else {
 
             // WE WILL SHOW FAILURE AS IN FAILURE WE DON'T GET REFERENCE PAYMENT ID
+            console.log("PAYMENT FAILED IN VERIFICATION COZ IT'S NOT AUTHENTIC ID'S");
             res.redirect(
                 `https://arya-hirehub.netlify.app/success}`
             );
