@@ -1,5 +1,4 @@
 const { Job } = require("../models/JobModel");
-const dayjs = require("dayjs")
 
 exports.getAllJob = async (req, res) => {
 
