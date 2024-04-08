@@ -1,11 +1,12 @@
 const { Job } = require("../models/JobModel");
+const dayjs = require("dayjs")
 
 exports.getAllJob = async (req, res) => {
 
     try {
 
         console.log(req.query);
-        console.log((req.params["page"]));
+        console.log((req.query.experience));
         const page = (req.params["page"]);
 
         let query = Job.find();
@@ -28,16 +29,12 @@ exports.getAllJob = async (req, res) => {
                     queryArr.push({ type: { $in: JSON.parse(req.query.type) } })
                 }
 
-                if (key == "category") {
-                    queryArr.push({ category: { $in: JSON.parse(req.query.category) } })
+                if (key == "date") {
+                    queryArr.push({ postedOn: { '$gte': new Date(Date.now() - req.query.date * 24 * 60 * 60 * 1000) } })
                 }
 
                 if (key == "salaryFrom") {
                     queryArr.push({ fixedSalary: { "$gte": Number(req.query.salaryFrom), "$lte": Number(req.query.salaryTo) } })
-                }
-
-                if (key == "country") {
-                    queryArr.push({ country: { $regex: '^' + req.query.country, $options: 'i' } })
                 }
 
                 if (key == "country") {

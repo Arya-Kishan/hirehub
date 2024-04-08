@@ -11,10 +11,6 @@ const jobSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please provide decription."],
   },
-  category: {
-    type: String,
-    required: [true, "Please provide a category."],
-  },
   country: {
     type: String,
     required: [true, "Please provide a country name."],
@@ -26,16 +22,10 @@ const jobSchema = new mongoose.Schema({
   location: {
     type: String,
   },
-  companyName:{
-    type:String
+  companyName: {
+    type: String
   },
   fixedSalary: {
-    type: Number,
-  },
-  salaryFrom: {
-    type: Number,
-  },
-  salaryTo: {
     type: Number,
   },
   expired: {
@@ -57,7 +47,7 @@ const jobSchema = new mongoose.Schema({
   appliedApplicants: {
     type: [mongoose.Schema.ObjectId],
     ref: "User",
-    default:[]
+    default: []
 
   },
   postedBy: {
