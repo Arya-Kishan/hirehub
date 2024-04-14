@@ -79,6 +79,8 @@ exports.getJob = async (req, res) => {
 
         if (jobIdArr) {
 
+            console.log(jobIdArr);
+
             let jobIdArr1 = JSON.parse(jobIdArr)
 
             let jobsArr = await Promise.all(jobIdArr1.map(async (e) => (await Job.findById(e))))
