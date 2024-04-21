@@ -259,9 +259,13 @@ exports.forgotPassword = async (req, res) => {
 
             const subject = "Reset Password"
             const html = `<p>Click <a href=${'https://arya-hirehub.netlify.app/changePassword?email=' + email + '&token=' + token}>here</a> to reset your password</p>`
-            let reponse = await sendMail({ email, subject, html })
+            let response = await sendMail({ email, subject, html })
 
-            res.status(200).json(reponse)
+            if (response == "UNABLE TO SEND EMAIL") {
+                res.status(400).json(response)
+            } else {
+                res.status(200).json(response)
+            }
 
         } else {
             res.status(400).json("NO USER FOUND WITH GIVEN EMAIL")
