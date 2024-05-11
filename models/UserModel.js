@@ -68,6 +68,10 @@ const userSchema = new mongoose.Schema({
         type: [mongoose.Schema.Types.ObjectId],
         ref: "Post",
     },
+    active: {
+        type: Date,
+        default: Date.now()
+    },
     resetPasswordToken: {
         type: String,
         default: ""

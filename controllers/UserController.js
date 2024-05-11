@@ -46,7 +46,7 @@ exports.checkUserWithJwt = async (req, res) => {
 
         const { userId } = verfiyToken;
 
-        const user = await User.findById(userId)
+        let user = await User.findByIdAndUpdate(userId, { $set: { active: Date.now() } })
 
         if (user) {
             res.status(200).json(user);
@@ -96,7 +96,10 @@ exports.loginUser = async (req, res) => {
 
         const { email, password } = req.body;
 
-        const user = await User.findOne({ email: email }).populate("friends")
+        let user = await User.findOneAndUpdate({ email: email }, { $set: { active: Date.now() } }).populate({
+            path: 'friends',
+            select: "-password"
+        })
 
         // CHECKING PASSWORD WITH HASHED PASSWORD
         let comparePassword = await bcrypt.compare(password, user.password)

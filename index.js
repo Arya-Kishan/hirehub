@@ -13,6 +13,7 @@ const postRouter = require("./routes/PostsRoutes")
 const notificationRouter = require("./routes/NotificationRoute")
 const applicationRouter = require("./routes/ApplicationRoute");
 const blogRouter = require("./routes/BlogRoute");
+const chatRouter = require("./routes/ChatRoutes");
 const { jwtAuthenticateUser } = require('./middlewares/Authenticate');
 
 const server = express()
@@ -37,6 +38,7 @@ server.use("/application", jwtAuthenticateUser, applicationRouter)
 server.use("/post", jwtAuthenticateUser, postRouter)
 server.use("/notification", jwtAuthenticateUser, notificationRouter)
 server.use("/blog", jwtAuthenticateUser, blogRouter)
+server.use("/chat", chatRouter)
 
 
 server.use("/", (req, res) => {
